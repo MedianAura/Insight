@@ -1,9 +1,50 @@
 import { app, BrowserWindow } from 'electron';
+import * as path from 'path';
+import * as url from 'url';
+
+const ArgumentParser = require('argparse').ArgumentParser;
+const debug = require('debug')('insight:main');
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) { // eslint-disable-line global-require
   app.quit();
 }
+
+let args = null;
+const parser = new ArgumentParser({
+  version: '0.0.1',
+  addHelp: true,
+  description: 'Argparse example',
+});
+parser.addArgument(
+  '--server',
+  {
+    help: 'Start in server mode',
+    defaultValue: false,
+    action: 'storeTrue',
+  },
+);
+parser.addArgument(
+  '--debug',
+  {
+    help: 'Start in debug mode',
+    defaultValue: false,
+    action: 'storeTrue',
+  },
+);
+
+let arg = process.argv.slice(1);
+if (process.argv.join(' ').indexOf('electron.exe') > -1) {
+  arg = process.argv.slice(2);
+}
+
+try {
+  args = parser.parseArgs(arg);
+} catch (e) {
+  app.quit();
+}
+
+global.sharedObject = { appArgv: args };
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -12,15 +53,33 @@ let mainWindow;
 const createWindow = () => {
   // Create the browser window.
   mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 1420,
+    height: 900,
+    title: 'SpiderMAJ',
   });
 
-  // and load the index.html of the app.
-  mainWindow.loadURL(`file://${__dirname}/index.html`);
+  let urlPrecursor = {
+    pathname: path.resolve(__dirname, '../../frontend/dist', 'index.html'),
+    protocol: 'file:',
+    slashes: true,
+  };
 
-  // Open the DevTools.
-  mainWindow.webContents.openDevTools();
+  if (args.server) {
+    urlPrecursor = {
+      pathname: 'localhost:8080',
+      protocol: 'http:',
+      slashes: true,
+    };
+  }
+
+  // and load the index.html of the app.
+  debug(`index: ${url.format(urlPrecursor)}`);
+  mainWindow.loadURL(url.format(urlPrecursor));
+
+  if (args.debug) {
+    // Open the DevTools.
+    mainWindow.webContents.openDevTools({ mode: 'detach' });
+  }
 
   // Emitted when the window is closed.
   mainWindow.on('closed', () => {

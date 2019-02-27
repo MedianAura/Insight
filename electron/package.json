@@ -5,8 +5,9 @@
   "description": "My Electron application description",
   "main": "src/index.js",
   "scripts": {
-    "start": "electron-forge start",
-    "package": "electron-forge package",
+    "start:server": "cross-env DEBUG=insight:* electron-forge start -- --debug --server",
+    "start": "cross-env DEBUG=insight:* electron-forge start",
+    "package": "cross-env NODE_ENV=production electron-forge package",
     "make": "electron-forge make",
     "publish": "electron-forge publish",
     "lint": "eslint src --color"
@@ -48,6 +49,9 @@
   },
   "dependencies": {
     "argparse": "^1.0.10",
+    "cross-env": "^5.2.0",
+    "debug": "^4.1.1",
+    "dotenv": "^6.2.0",
     "electron-compile": "^6.4.4",
     "electron-squirrel-startup": "^1.0.0"
   },

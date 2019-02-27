@@ -2,10 +2,18 @@
   "name": "insight",
   "version": "1.0.0",
   "scripts": {
+    "postinstall": "run-p -ln install:*",
+    "install:electron": "cd ./electron && yarn install",
+    "install:frontend": "cd ./frontend && yarn install",
     "frontend:serve": "cd ./frontend && yarn serve",
     "frontend:build": "cd ./frontend && yarn build",
-    "electron:run:server": "cd ./electron && yarn start",
+    "electron:run:server": "cd ./electron && yarn start:server",
     "electron:run": "cd ./electron && yarn start",
     "electron:build": "cd ./electron && yarn package"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "npm-run-all": "^4.1.5",
+    "standard": "^12.0.1"
   }
 }
