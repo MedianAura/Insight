@@ -1,0 +1,11 @@
+{
+  "name": "insight",
+  "version": "1.0.0",
+  "scripts": {
+    "frontend:serve": "cd ./frontend && yarn serve",
+    "frontend:build": "cd ./frontend && yarn build",
+    "electron:run:server": "cd ./electron && yarn start",
+    "electron:run": "cd ./electron && yarn start",
+    "electron:build": "cd ./electron && yarn package"
+  }
+}
